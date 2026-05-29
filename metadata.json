@@ -1,0 +1,6 @@
+{
+  "name": "Calculadora de Leilões de Imóveis",
+  "description": "Uma calculadora avançada e completa para análise financeira de leilões de imóveis, com simulação de taxas, impostos, custos e gráficos interativos de viabilidade.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
