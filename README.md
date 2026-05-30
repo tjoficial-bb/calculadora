@@ -79,21 +79,24 @@ Se você ainda não Git na sua pasta local, inicialize-a com os seguintes comand
 
 ---
 
-## 📦 Como Gerar a Versão de Produção (Build)
+## 📦 Como Gerar e Publicar a Versão de Produção (Build)
 
-Ao atualizar o Git, você precisará gerar os arquivos otimizados finais para colocar na sua hospedagem. Siga o fluxo abaixo no seu terminal local:
+Ao atualizar o Git ou sua hospedagem, o simulador agora compila **diretamente na raiz do projeto** (gerando `/index.html` e `/assets/` na raiz do seu repositório). 
+
+Isso significa que **você pode simplesmente enviar ou sincronizar a pasta inteira do seu projeto (via FTP ou Git)** para o seu servidor, e ele abrirá instantaneamente sem precisar configurar subpastas ou builds na sua hospedagem!
+
+### Passo a passo para gerar a build e subir para sua Hospedagem:
 
 1. **Instale as dependências (necessário apenas na primeira vez):**
    ```bash
    npm install
    ```
 
-2. **Gere a pasta de produção compilada:**
+2. **Gere a versão de produção otimizada:**
    ```bash
    npm run build
    ```
 
-3. **Suba para o servidor:**
-   Este comando criará uma pasta chamada **`dist`** no seu diretório raiz.
-   * **É o conteúdo interno da pasta `dist` que deve ser copiado e enviado para o seu servidor FTP ou painel de hospedagem (como cPanel).**
-   * Certifique-se de que o arquivo `index.html` gerado dentro da pasta `dist` fique localizado no diretório correspondente à URL desejada no seu servidor (ex: `/public_html/` para o domínio principal, ou `/public_html/calculadora/` para uma subpasta).
+3. **Pronto! Suba os arquivos para seu servidor:**
+   * Este comando atualizará os arquivos **`index.html`** e a pasta de arquivos **`assets/`** diretamente no diretório principal (raiz) do seu projeto.
+   * **Agora, basta enviar todos os arquivos da raiz do projeto para o seu painel de hospedagem (cPanel, Hostinger FTP, etc.), ou simplesmente dar `git push` no seu repositório Git!** A hospedagem detectará o arquivo `index.html` na raiz automaticamente e carregará tudo com caminhos de arquivos relativos 100% funcionais!
