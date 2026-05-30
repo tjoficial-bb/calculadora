@@ -81,22 +81,30 @@ Se você ainda não Git na sua pasta local, inicialize-a com os seguintes comand
 
 ## 📦 Como Gerar e Publicar a Versão de Produção (Build)
 
-Ao atualizar o Git ou sua hospedagem, o simulador agora compila **diretamente na raiz do projeto** (gerando `/index.html` e `/assets/` na raiz do seu repositório). 
+O compilador do Vite empacota todo o código em HTML, CSS e JavaScript otimizados dentro da pasta chamada **`/dist`**.
 
-Isso significa que **você pode simplesmente enviar ou sincronizar a pasta inteira do seu projeto (via FTP ou Git)** para o seu servidor, e ele abrirá instantaneamente sem precisar configurar subpastas ou builds na sua hospedagem!
+### ⚠️ O maior erro ao subir na Hospedagem (cPanel / Hostinger):
+**NÃO suba a pasta do projeto inteiro (com `src/`, `package.json`, `node_modules/`, etc.) para o servidor de produção.**
+* Os navegadores não sabem ler arquivos `.tsx` ou TypeScript brutos. Eles só sabem ler HTML, JS e CSS compilados.
+* Você deve subir **APENAS o conteúdo de dentro da pasta `/dist`** para a pasta pública do seu servidor (geralmente chamada de `public_html`, `www` ou no diretório/subpasta do subdomínio que você criou).
+
+---
 
 ### Passo a passo para gerar a build e subir para sua Hospedagem:
 
-1. **Instale as dependências (necessário apenas na primeira vez):**
+1. **Gere a versão de produção otimizada (se estiver compilando na sua máquina):**
    ```bash
    npm install
-   ```
-
-2. **Gere a versão de produção otimizada:**
-   ```bash
    npm run build
    ```
+   *(Este comando criará uma pasta chamada `/dist` na sua máquina com os arquivos prontos).*
 
-3. **Pronto! Suba os arquivos para seu servidor:**
-   * Este comando atualizará os arquivos **`index.html`** e a pasta de arquivos **`assets/`** diretamente no diretório principal (raiz) do seu projeto.
-   * **Agora, basta enviar todos os arquivos da raiz do projeto para o seu painel de hospedagem (cPanel, Hostinger FTP, etc.), ou simplesmente dar `git push` no seu repositório Git!** A hospedagem detectará o arquivo `index.html` na raiz automaticamente e carregará tudo com caminhos de arquivos relativos 100% funcionais!
+2. **Como subir para o Servidor (cPanel, Hostinger FTP, File Manager, etc.):**
+   * Entre no painel da sua hospedagem e abra o **Gerenciador de Arquivos** (ou conecte via FTP).
+   * Vá até a pasta pública onde o site deve abrir (exemplo: `public_html` para o site principal, ou `public_html/calculadora` se for abrir em um subdiretório).
+   * **Suba apenas arquivos e pastas de DENTRO da pasta `/dist`**:
+     * `assets/` (pasta)
+     * `index.html` (arquivo)
+
+3. **Pronto!** 
+   Graças à configuração `base: './'` que definimos no `vite.config.ts`, todos os caminhos agora são totalmente **relativos**. O seu site abrirá de forma impecável instantaneamente!
