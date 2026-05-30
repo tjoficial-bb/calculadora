@@ -4,6 +4,25 @@ Este é o simulador financeiro e de viabilidade de leilões da **TJ INVEST**. El
 
 ---
 
+## 🛠️ Como Configurar a Hostinger para Funcionar via Git (Seu caso atual)
+
+Analisamos o print da sua tela na **Hostinger (Configurações e reimplantação)**. O motivo de o site não abrir é que a sua hospedagem está configurada de forma vazia ("Nenhum"), logo ela não compila o simulador e não sabe como inicializar o servidor de produção do Node.js.
+
+Preencha os campos da sua tela na Hostinger com as configurações abaixo para ativar a compilação automática:
+
+1. **Configuração de compilação e saída:**
+   * **Comando de construção (Build command):** Altere de "Nenhum" para **`npm run build`** (ou selecione a opção que permita escrever o comando).
+   * **Diretório de saída (Output directory):** Escreva exatamente **`dist`**
+   * **Arquivo de entrada (Entry file):** Escreva exatamente **`server.js`**
+
+2. **Como funciona por trás:**
+   * **`npm run build`**: Fará com que o Vite compile todo o frontend em HTML/CSS/JS otimizados e chame o `esbuild` para compilar o servidor Express em `dist/server.cjs`.
+   * **`server.js`**: Criamos este arquivo leve na raiz do seu projeto. Quando a Hostinger iniciar a sua hospedagem do Node, ela vai abrir o `server.js` que se conecta de forma dinâmica e automatizada à porta disponibilizada pela Hostinger, servindo os arquivos compilados da pasta `dist` perfeitamente!
+
+Clique em **Salvar** na Hostinger e depois clique em **Reimplantar / Deploy** para que a Hostinger puxe essas configurações atualizadas do repositório Git e faça o build automático. O site abrirá instantaneamente de forma impecável!
+
+---
+
 ## 🚀 Resolvido: Problema de Carregamento na Hospedagem
 
 Anteriormente, ao fazer o upload dos arquivos compilados em alguns servidores ou subpastas de hospedagem, a tela podia ficar branca (sem carregar os recursos de estilo e script). 
