@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CalculatedResults, InvestmentData } from '../types';
 import { generateSensitivityMatrix } from '../utils';
+import { InvestmentComparison } from './InvestmentComparison';
 import { 
   ResponsiveContainer, PieChart, Pie, Cell, 
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid 
@@ -440,86 +441,8 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ data, result
 
       </div>
 
-      {/* 5. Benchmarking against Brazilian standard indexes (CDI, IBOVESPA, etc.) */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm text-left">
-        <div className="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
-          <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-            <Award size={16} className="text-gold" /> Benchmark de Rentabilidade da Operação
-          </h3>
-          <span className="text-[10px] font-bold text-slate-400">Comparação com Mercado Financeiro</span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* ROI Card */}
-          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 flex flex-col justify-between">
-            <div>
-              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">ROI Operação</span>
-              <span className="text-xl font-extrabold text-slate-850 mt-1 block">{formatPercent(results.roiTotal)}</span>
-            </div>
-            <span className="text-[9px] text-slate-400 mt-2 block italic leading-snug">Rentabilidade total líquida do capital exposto.</span>
-          </div>
-
-          {/* CDI Card */}
-          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 flex flex-col justify-between">
-            <div>
-              <div className="flex justify-between items-start">
-                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">vs CDI (13,75% a.a.)</span>
-                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${results.diffCdi >= 0 ? 'bg-gold-light text-gold-dark' : 'bg-rose-50 text-rose-600'}`}>
-                  {results.diffCdi >= 0 ? `+` : ``}{(results.diffCdi * 100).toFixed(2)} pp
-                </span>
-              </div>
-              <span className="text-xl font-extrabold text-slate-800 mt-1 block">{formatPercent(results.benchmarkCdi)}</span>
-            </div>
-            <span className="text-[9px] text-slate-400 mt-2 block italic leading-snug">Rendimento gerado por um fundo CDI equivalente no período.</span>
-          </div>
-
-          {/* IBOVESPA Card */}
-          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 flex flex-col justify-between">
-            <div>
-              <div className="flex justify-between items-start">
-                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">vs IBOVESPA</span>
-                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${results.diffIbovespa >= 0 ? 'bg-gold-light text-gold-dark' : 'bg-rose-50 text-rose-600'}`}>
-                  {results.diffIbovespa >= 0 ? `+` : ``}{(results.diffIbovespa * 100).toFixed(2)} pp
-                </span>
-              </div>
-              <span className="text-xl font-extrabold text-slate-800 mt-1 block">{formatPercent(results.benchmarkIbovespa)}</span>
-            </div>
-            <span className="text-[9px] text-slate-400 mt-2 block italic leading-snug">Rendimento gerado pela bolsa brasileira de ações (Média).</span>
-          </div>
-
-          {/* IFIX Card */}
-          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 flex flex-col justify-between">
-            <div>
-              <div className="flex justify-between items-start">
-                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">vs IFIX</span>
-                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${results.diffIfix >= 0 ? 'bg-gold-light text-gold-dark' : 'bg-rose-50 text-rose-600'}`}>
-                  {results.diffIfix >= 0 ? `+` : ``}{(results.diffIfix * 100).toFixed(2)} pp
-                </span>
-              </div>
-              <span className="text-xl font-extrabold text-slate-800 mt-1 block">{formatPercent(results.benchmarkIfix)}</span>
-            </div>
-            <span className="text-[9px] text-slate-400 mt-2 block italic leading-snug">Índice médio de fundos imobiliários no mercado geral.</span>
-          </div>
-        </div>
-
-        {/* Comparative message */}
-        <div className="bg-gold-light/40 border border-gold/15 rounded-xl p-3 mt-4 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-gold/15 flex items-center justify-center text-gold-dark shrink-0">
-            <TrendingUp size={16} />
-          </div>
-          <div className="text-[11px] text-slate-600">
-            {results.diffCdi > 0 ? (
-              <span>
-                Esta operação de leilão oferece um prêmio de liquidez expressivo, superando o CDI em <strong>{(results.diffCdi * 100).toFixed(2)} pontos percentuais</strong>. Ótima oportunidade de alocação ativa de capital!
-              </span>
-            ) : (
-              <span>
-                Atualmente os custos e tributação desta operação resultam em ganho abaixo do esperado face aos ativos livres de risco (CDI). Recomenda-se buscar maior deságio na arrematação.
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* 5. Interactive Complete Asset Benchmarking (including direct CDB card and comparison tables) */}
+      <InvestmentComparison data={data} results={results} />
     </div>
   );
 };
