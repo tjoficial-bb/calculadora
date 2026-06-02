@@ -33,6 +33,23 @@ export default function App() {
     }));
   };
 
+  // Pre-populates the entire calculator with real-estate analysis from Gemini or local mockup database
+  const handlePropertyFound = (info: any) => {
+    setData((prev) => ({
+      ...prev,
+      propertyAddress: info.address || prev.propertyAddress,
+      propertyCity: info.city || prev.propertyCity,
+      propertyImage: info.propertyImage || prev.propertyImage,
+      arrematacaoValue: info.arrematacaoValue !== undefined ? info.arrematacaoValue : prev.arrematacaoValue,
+      saleValue: info.saleValue !== undefined ? info.saleValue : prev.saleValue,
+      holdMonths: info.holdMonths !== undefined ? info.holdMonths : prev.holdMonths,
+      iptuMonthly: info.iptuMonthly !== undefined ? info.iptuMonthly : prev.iptuMonthly,
+      condominioMonthly: info.condominioMonthly !== undefined ? info.condominioMonthly : prev.condominioMonthly,
+      dividaPropterRem: info.dividaPropterRem !== undefined ? info.dividaPropterRem : prev.dividaPropterRem,
+    }));
+    setHasCalculated(true);
+  };
+
   const scrollToResults = () => {
     setHasCalculated(true);
     setTimeout(() => {
@@ -218,6 +235,7 @@ export default function App() {
               onAddressChange={(addr) => updateDataField('propertyAddress', addr)}
               city={data.propertyCity}
               onCityChange={(c) => updateDataField('propertyCity', c)}
+              onPropertyFound={handlePropertyFound}
             />
 
             {/* Link do leiloeiro */}
