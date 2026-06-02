@@ -434,7 +434,7 @@ export default function App() {
                 irDeductible="non-deductible"
               />
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 
                 {/* Dívida Propter Rem */}
                 <div className="flex flex-col gap-1">
@@ -466,7 +466,7 @@ export default function App() {
               <div className="bg-slate-50 border border-slate-200/50 p-3 rounded-xl flex flex-col gap-3">
                 <span className="text-[9px] uppercase font-black text-slate-400 tracking-wider">Obras e Reformas do Ativo</span>
                 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   
                   {/* Mão de Obra */}
                   <div className="flex flex-col gap-1">

@@ -25,7 +25,7 @@ interface AssetConfig {
 }
 
 export const InvestmentComparison: React.FC<InvestmentComparisonProps> = ({ data, results }) => {
-  const [selectedAssetId, setSelectedAssetId] = useState<string>('cdb');
+  const [selectedAssetId, setSelectedAssetId] = useState<string>('leilao');
 
   const capital = results.exposicaoCaixa;
   const holdMonths = data.holdMonths;
@@ -189,8 +189,30 @@ export const InvestmentComparison: React.FC<InvestmentComparisonProps> = ({ data
     };
   };
 
-  const selectedAsset = assets.find(a => a.id === selectedAssetId) || assets[1];
-  const selectedAssetCalcs = getAssetCalculations(selectedAsset);
+  const selectedAsset = selectedAssetId === 'leilao' ? {
+    id: 'leilao',
+    name: 'Leilão Imobiliário (Este negócio)',
+    category: 'Imóveis',
+    annualRate: results.roiAnualizado,
+    rateDisplay: `${(results.roiTotal * 100).toFixed(0)}%`,
+    hasIr: results.impostoRendaTotal > 0,
+    characteristics: 'Operação de leilão imobiliário personalizada com deságio estratégico e alta rentabilidade.',
+    risk: 'Médio / Controlado',
+    riskColor: 'bg-gold-light text-gold-dark border-gold-300',
+    icon: Award,
+  } as AssetConfig : (assets.find(a => a.id === selectedAssetId) || assets[1]);
+
+  const selectedAssetCalcs = selectedAssetId === 'leilao' ? {
+    periodRate: results.roiTotal,
+    rentabilidadeBrutaNoPeriodo: results.lucroBruto,
+    impostoRenda: results.impostoRendaTotal,
+    rentabilidadeLiquidaNoPeriodo: results.lucroLiquido,
+    roiLiquidoPeriodo: results.roiTotal,
+    rentabilidadeLiquidaMensal: results.lucroLiquido / holdMonths,
+    rentabilidadeBrutaMensal: results.lucroBruto / holdMonths,
+    netRoiPercent: results.roiTotal * 100,
+    grossRoiPercent: (results.lucroBruto / capital) * 100
+  } : getAssetCalculations(selectedAsset);
 
   // Build range lists for display in columns (dynamic bounds)
   const getAssetRanges = (asset: AssetConfig) => {
@@ -318,7 +340,14 @@ export const InvestmentComparison: React.FC<InvestmentComparisonProps> = ({ data
               <tbody className="divide-y divide-slate-100 text-xs">
                 
                 {/* 1. Leilão Imobiliário (Este negócio) highlights */}
-                <tr className="bg-gold-light/20 hover:bg-gold-light/35 font-semibold transition-colors border-l-4 border-gold">
+                <tr 
+                  onClick={() => setSelectedAssetId('leilao')}
+                  className={`cursor-pointer transition-colors border-l-4 border-gold ${
+                    selectedAssetId === 'leilao' 
+                      ? 'bg-gold-light/45 font-bold ring-1 ring-gold shadow-sm' 
+                      : 'bg-gold-light/20 hover:bg-gold-light/30 font-semibold'
+                  }`}
+                >
                   <td className="p-3 flex items-center gap-2.5">
                     <div className="w-6 h-6 rounded bg-gold flex items-center justify-center text-slate-950 font-black text-[10px]">LI</div>
                     <div>
@@ -453,15 +482,19 @@ export const InvestmentComparison: React.FC<InvestmentComparisonProps> = ({ data
                 <div>
                   <span className="text-slate-400 block">Imposto de Renda (IR)</span>
                   <span className="text-[9.5px] text-slate-500 font-semibold italic">
-                    {selectedAsset.hasIr ? `Alíquota reg. de ${currIrInfo.label}` : 'Ativo Isento de Imposto'}
+                    {selectedAssetId === 'leilao'
+                      ? `Tributação estimada (${data.taxMode === 'PF' ? 'PF - Ganho de Capital' : data.taxMode === 'PJ' ? 'PJ Simples' : 'Manual'})`
+                      : selectedAsset.hasIr 
+                        ? `Alíquota reg. de ${currIrInfo.label}` 
+                        : 'Ativo Isento de Imposto'}
                   </span>
                 </div>
                 <div className="text-right">
-                  {selectedAsset.hasIr ? (
+                  {selectedAssetCalcs.impostoRenda > 0 ? (
                     <>
                       <span className="font-extrabold text-rose-500 font-mono block">- {formatBRL(selectedAssetCalcs.impostoRenda)}</span>
                       <span className="text-[9px] bg-rose-500/15 text-rose-450 border border-rose-500/10 px-1 py-0.1 rounded text-red-400">
-                        {currIrInfo.label} sobre o lucro
+                        {selectedAssetId === 'leilao' ? 'Imposto Totais da Operação' : `${currIrInfo.label} sobre o lucro`}
                       </span>
                     </>
                   ) : (

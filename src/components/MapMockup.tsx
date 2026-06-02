@@ -27,6 +27,7 @@ export const MapMockup: React.FC<MapMockupProps> = ({
   const [isSearching, setIsSearching] = useState(false);
   const [searchStatusMsg, setSearchStatusMsg] = useState('');
   const [lastFoundBanner, setLastFoundBanner] = useState<string>('');
+  const [isMapExpanded, setIsMapExpanded] = useState(true);
 
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -173,79 +174,96 @@ export const MapMockup: React.FC<MapMockupProps> = ({
         )}
       </div>
 
-      {/* Stylized Vector SVG Map Simulation */}
-      <div className="relative">
-        <div className="text-[9px] text-slate-400 flex items-center justify-between mb-1">
-          <span className="text-[9px] font-medium text-slate-400 flex items-center gap-1">
-            <Compass size={11} className="animate-spin-slow text-slate-300" />
-            Clique no mapa para ajustar a latitude/longitude
-          </span>
-          <span className="font-mono text-[9px] bg-slate-100 text-slate-600 px-1 rounded">
-            X:{pinPos.x.toFixed(0)}, Y:{pinPos.y.toFixed(0)}
-          </span>
-        </div>
-        
-        <div 
-          onClick={handleMapClick}
-          className="relative h-44 w-full bg-slate-50 border border-slate-100 rounded-xl overflow-hidden cursor-crosshair group/map shadow-inner"
+      {/* Stylized Vector SVG Map Simulation toggle header */}
+      <div className="border-t border-slate-100 pt-2.5 mt-0.5">
+        <button
+          type="button"
+          onClick={() => setIsMapExpanded(!isMapExpanded)}
+          className="w-full flex justify-between items-center text-[11px] font-bold text-slate-500 hover:text-gold transition-colors py-1 cursor-pointer"
         >
-          {/* SVG Map Grid Background mimicking streets and zones */}
-          <svg className="absolute inset-0 w-full h-full opacity-65" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="street-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" strokeWidth="1" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#street-grid)" />
-            
-            {/* Styled district zones */}
-            <path d="M 0,20 Q 80,45 150,15 T 320,50 L 320,120 L 0,120 Z" fill="#f0fdf4" opacity="0.8" /> {/* Park Zone */}
-            <path d="M 120,140 Q 180,60 250,150 T 400,100" fill="none" stroke="#bae6fd" strokeWidth="14" strokeLinecap="round" /> {/* River */}
-            <path d="M 120,140 Q 180,60 250,150 T 400,100" fill="none" stroke="#e0f2fe" strokeWidth="8" strokeLinecap="round" /> {/* Inner River Water */}
-            
-            {/* Primary Street highways */}
-            <line x1="0" y1="40" x2="350" y2="160" stroke="#fed7aa" strokeWidth="4" />
-            <line x1="80" y1="0" x2="80" y2="200" stroke="#fed7aa" strokeWidth="4" />
-            <line x1="240" y1="0" x2="240" y2="200" stroke="#e2e8f0" strokeWidth="3" />
-            <line x1="0" y1="110" x2="350" y2="110" stroke="#cbd5e1" strokeWidth="2.5" />
-            
-            {/* Secondary Street blocks */}
-            <line x1="40" y1="0" x2="40" y2="200" stroke="#f1f5f9" strokeWidth="1.5" />
-            <line x1="120" y1="0" x2="120" y2="200" stroke="#f1f5f9" strokeWidth="1.5" />
-            <line x1="160" y1="0" x2="160" y2="200" stroke="#f1f5f9" strokeWidth="1.5" />
-            <line x1="200" y1="0" x2="200" y2="200" stroke="#f1f5f9" strokeWidth="1.5" />
-            <line x1="280" y1="0" x2="280" y2="200" stroke="#f1f5f9" strokeWidth="1.5" />
-            
-            {/* Diagonal avenues */}
-            <line x1="0" y1="180" x2="350" y2="20" stroke="#cbd5e1" strokeWidth="2" />
-            
-            {/* Place Names & Landmarks */}
-            <text x="35" y="30" fill="#94a3b8" fontSize="8" fontWeight="bold">REPUBLICA</text>
-            <text x="140" y="55" fill="#166534" fontSize="8" fontWeight="bold">PARQUE ACLIMAÇÃO</text>
-            <text x="250" y="80" fill="#0284c7" fontSize="8" fontWeight="bold">IPIRANGA</text>
-            <text x="50" y="145" fill="#94a3b8" fontSize="8" fontWeight="bold">CONSOLAÇÃO</text>
-          </svg>
+          <span className="flex items-center gap-1.5 uppercase tracking-wider">
+            <Compass size={13} className={isMapExpanded ? "text-gold animate-spin-slow" : "text-slate-400"} />
+            Simulação de Mapa de Localização
+          </span>
+          <span className="text-[10px] text-slate-400">
+            {isMapExpanded ? "▲ Ocultar Mapa" : "▼ Visualizar Mapa"}
+          </span>
+        </button>
+      </div>
 
-          {/* Interactive Ping/Sonar Ring on hover */}
+      {isMapExpanded && (
+        <div className="relative animate-fade-in flex flex-col gap-1.5 mt-1">
+          <div className="text-[9px] text-slate-400 flex items-center justify-between">
+            <span className="text-[9px] font-medium text-slate-400 flex items-center gap-1">
+              Clique no mapa para ajustar a latitude/longitude manualmente
+            </span>
+            <span className="font-mono text-[9px] bg-slate-100 text-slate-600 px-1 rounded">
+              X:{pinPos.x.toFixed(0)}, Y:{pinPos.y.toFixed(0)}
+            </span>
+          </div>
+          
           <div 
-            className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center transition-all duration-300"
-            style={{ left: pinPos.x, top: pinPos.y }}
+            onClick={handleMapClick}
+            className="relative h-44 w-full bg-slate-50 border border-slate-100 rounded-xl overflow-hidden cursor-crosshair group/map shadow-inner"
           >
-            <div className="absolute w-8 h-8 rounded-full bg-gold/15 animate-ping" />
-            <div className="absolute w-12 h-12 rounded-full border border-gold/10 scale-95 animate-pulse" />
-            <MapPin className="text-gold drop-shadow-md z-10 animate-bounce" fill="#fdfaf2" size={24} />
-          </div>
+            {/* SVG Map Grid Background mimicking streets and zones */}
+            <svg className="absolute inset-0 w-full h-full opacity-65" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="street-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" strokeWidth="1" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#street-grid)" />
+              
+              {/* Styled district zones */}
+              <path d="M 0,20 Q 80,45 150,15 T 320,50 L 320,120 L 0,120 Z" fill="#f0fdf4" opacity="0.8" /> {/* Park Zone */}
+              <path d="M 120,140 Q 180,60 250,150 T 400,100" fill="none" stroke="#bae6fd" strokeWidth="14" strokeLinecap="round" /> {/* River */}
+              <path d="M 120,140 Q 180,60 250,150 T 400,100" fill="none" stroke="#e0f2fe" strokeWidth="8" strokeLinecap="round" /> {/* Inner River Water */}
+              
+              {/* Primary Street highways */}
+              <line x1="0" y1="40" x2="350" y2="160" stroke="#fed7aa" strokeWidth="4" />
+              <line x1="80" y1="0" x2="80" y2="200" stroke="#fed7aa" strokeWidth="4" />
+              <line x1="240" y1="0" x2="240" y2="200" stroke="#e2e8f0" strokeWidth="3" />
+              <line x1="0" y1="110" x2="350" y2="110" stroke="#cbd5e1" strokeWidth="2.5" />
+              
+              {/* Secondary Street blocks */}
+              <line x1="40" y1="0" x2="40" y2="200" stroke="#f1f5f9" strokeWidth="1.5" />
+              <line x1="120" y1="0" x2="120" y2="200" stroke="#f1f5f9" strokeWidth="1.5" />
+              <line x1="160" y1="0" x2="160" y2="200" stroke="#f1f5f9" strokeWidth="1.5" />
+              <line x1="200" y1="0" x2="200" y2="200" stroke="#f1f5f9" strokeWidth="1.5" />
+              <line x1="280" y1="0" x2="280" y2="200" stroke="#f1f5f9" strokeWidth="1.5" />
+              
+              {/* Diagonal avenues */}
+              <line x1="0" y1="180" x2="350" y2="20" stroke="#cbd5e1" strokeWidth="2" />
+              
+              {/* Place Names & Landmarks */}
+              <text x="35" y="30" fill="#94a3b8" fontSize="8" fontWeight="bold">REPUBLICA</text>
+              <text x="140" y="55" fill="#166534" fontSize="8" fontWeight="bold">PARQUE ACLIMAÇÃO</text>
+              <text x="250" y="80" fill="#0284c7" fontSize="8" fontWeight="bold">IPIRANGA</text>
+              <text x="50" y="145" fill="#94a3b8" fontSize="8" fontWeight="bold">CONSOLAÇÃO</text>
+            </svg>
 
-          {/* Google / GIS map interface visual overlay */}
-          <div className="absolute bottom-1 right-2 bg-white/80 backdrop-blur-xs px-1 py-0.5 rounded text-[8px] text-slate-500 font-mono pointer-events-none border border-slate-100">
-            © {city} Vector GIS Core
-          </div>
-          <div className="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-xs px-2 py-1 rounded text-[8px] text-white pointer-events-none flex items-center gap-1 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Leilão Centralizado: {city}
+            {/* Interactive Ping/Sonar Ring on hover */}
+            <div 
+              className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center transition-all duration-300"
+              style={{ left: pinPos.x, top: pinPos.y }}
+            >
+              <div className="absolute w-8 h-8 rounded-full bg-gold/15 animate-ping" />
+              <div className="absolute w-12 h-12 rounded-full border border-gold/10 scale-95 animate-pulse" />
+              <MapPin className="text-gold drop-shadow-md z-10 animate-bounce" fill="#fdfaf2" size={24} />
+            </div>
+
+            {/* Google / GIS map interface visual overlay */}
+            <div className="absolute bottom-1 right-2 bg-white/80 backdrop-blur-xs px-1 py-0.5 rounded text-[8px] text-slate-500 font-mono pointer-events-none border border-slate-100">
+              © {city} Vector GIS Core
+            </div>
+            <div className="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-xs px-2 py-1 rounded text-[8px] text-white pointer-events-none flex items-center gap-1 shadow-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Leilão Centralizado: {city}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
